@@ -157,7 +157,7 @@ export default function AdminPanel() {
   
   // Form states
   const [nuevoCliente, setNuevoCliente] = useState({ nombre: '', email: '', telefono: '', notas: '' })
-  const [nuevaCobranza, setNuevaCobranza] = useState({ clienteId: '', concepto: '', monto: '', fechaVencimiento: '', enviarNotificacion: true })
+  const [nuevaCobranza, setNuevaCobranza] = useState({ clienteId: '', concepto: '', monto: '', fechaVencimiento: '', enviarNotificacion: false })
   const [nuevoMarketing, setNuevoMarketing] = useState({ tipo: 'promocion', titulo: '', mensaje: '', destinatarios: 'todos', fechaProgramada: '', repetir: '' })
   const [nuevoUsuario, setNuevoUsuario] = useState({ email: '', password: '', nombre: '', rol: 'admin' })
   const [editandoCliente, setEditandoCliente] = useState<Cliente | null>(null)
@@ -539,6 +539,37 @@ export default function AdminPanel() {
     }
   }
 
+  // Marcar compra manual (para el dueño desde su celular)
+  const marcarCompraManual = async (clienteId: string) => {
+    try {
+      const cliente = clientes.find(c => c.id === clienteId)
+      if (!cliente) return
+      
+      const puntosGanados = negocio?.puntosPorVisita || 1
+      
+      // Registrar la visita y agregar puntos
+      const res = await fetch('/api/visitas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          clienteId,
+          puntosGanados,
+          concepto: 'Compra registrada manualmente'
+        })
+      })
+      
+      if (res.ok) {
+        setMensaje({ tipo: 'exito', texto: `✅ Compra registrada a ${cliente.nombre}. +${puntosGanados} cupón` })
+        cargarDatos()
+      } else {
+        const data = await res.json()
+        setMensaje({ tipo: 'error', texto: data.error || 'Error al registrar compra' })
+      }
+    } catch {
+      setMensaje({ tipo: 'error', texto: 'Error al registrar compra' })
+    }
+  }
+
   // Canjear premio
   const canjearPremio = async (clienteId: string) => {
     try {
@@ -874,6 +905,7 @@ export default function AdminPanel() {
                       )}
                       {editandoCliente?.id !== c.id && (
                         <div className="flex gap-2 mt-3 flex-wrap">
+                          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700" onClick={() => marcarCompraManual(c.id)}>🛒 Compra</Button>
                           <Button size="sm" variant="outline" onClick={() => setEditandoCliente(c)}>✏️ Editar</Button>
                           <Button size="sm" variant="outline" onClick={() => agregarPuntos(c.id, 1)}>+1</Button>
                           {c.puntos >= (negocio?.puntosParaPremio || 10) && (
