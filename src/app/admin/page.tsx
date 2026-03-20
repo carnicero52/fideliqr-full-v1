@@ -254,7 +254,7 @@ export default function AdminPanel() {
   const cargarMarketing = async () => {
     const res = await fetch('/api/marketing')
     const data = await res.json()
-    setMarketing(data)
+    setMarketing(Array.isArray(data) ? data : [])
   }
 
   // Cambiar tab
