@@ -97,6 +97,10 @@ interface Configuracion {
   notificarCliente: boolean
   autoActualizar: boolean
   intervaloActualizacion: number
+  // Recordatorios automáticos
+  recordatoriosAutomaticos?: boolean
+  diasRecordatorio?: number
+  diasRecordatorioVencido?: number
 }
 
 interface Estadisticas {
@@ -1312,6 +1316,109 @@ export default function AdminPanel() {
         {/* Cobranzas */}
         {tab === 'cobranzas' && (
           <div className="space-y-6">
+            {/* Configuración de Recordatorios Automáticos */}
+            <Card className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  ⏰ Recordatorios Automáticos
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      id="recordatoriosAuto"
+                      checked={configuracion?.recordatoriosAutomaticos ?? true}
+                      onChange={async (e) => {
+                        if (!configuracion) return
+                        try {
+                          const res = await fetch('/api/configuracion', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              ...configuracion,
+                              recordatoriosAutomaticos: e.target.checked
+                            })
+                          })
+                          if (res.ok) {
+                            setMensaje({ tipo: 'exito', texto: 'Configuración actualizada' })
+                            cargarDatos()
+                          }
+                        } catch {
+                          setMensaje({ tipo: 'error', texto: 'Error al guardar' })
+                        }
+                      }}
+                      className="w-5 h-5 rounded"
+                    />
+                    <Label htmlFor="recordatoriosAuto" className="cursor-pointer">
+                      Activar recordatorios automáticos
+                    </Label>
+                  </div>
+                  <div>
+                    <Label className="text-sm">Días antes del vencimiento</Label>
+                    <Input 
+                      type="number" 
+                      value={configuracion?.diasRecordatorio || 3}
+                      onChange={async (e) => {
+                        if (!configuracion) return
+                        try {
+                          const res = await fetch('/api/configuracion', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              ...configuracion,
+                              diasRecordatorio: parseInt(e.target.value) || 3
+                            })
+                          })
+                          if (res.ok) cargarDatos()
+                        } catch {
+                          console.error('Error')
+                        }
+                      }}
+                      className="w-24"
+                      min={1}
+                      max={30}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Enviar recordatorio X días antes</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm">Días después del vencimiento</Label>
+                    <Input 
+                      type="number" 
+                      value={configuracion?.diasRecordatorioVencido || 7}
+                      onChange={async (e) => {
+                        if (!configuracion) return
+                        try {
+                          const res = await fetch('/api/configuracion', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              ...configuracion,
+                              diasRecordatorioVencido: parseInt(e.target.value) || 7
+                            })
+                          })
+                          if (res.ok) cargarDatos()
+                        } catch {
+                          console.error('Error')
+                        }
+                      }}
+                      className="w-24"
+                      min={1}
+                      max={30}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Recordar cada X días si está vencido</p>
+                  </div>
+                </div>
+                <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-sm text-amber-700 dark:text-amber-300">
+                  💡 <strong>Configuración del Cron Job:</strong> Para activar los recordatorios automáticos, configura un cron job en <code className="bg-amber-200 dark:bg-amber-800 px-1 rounded">cron-job.org</code> que llame a:
+                  <code className="block mt-2 bg-white dark:bg-slate-800 p-2 rounded text-xs">
+                    GET /api/cron/cobranzas?secret=TU_SECRET
+                  </code>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader><CardTitle className="text-lg">➕ Nueva Cobranza</CardTitle></CardHeader>
               <CardContent>

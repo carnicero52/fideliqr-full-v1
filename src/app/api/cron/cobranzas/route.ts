@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { enviarRecordatorioCobranzasVencidas } from '@/lib/email'
+import { enviarEmail } from '@/lib/email'
 import { db } from '@/lib/db'
 
 // Token de seguridad para verificar que es un cron job legítimo
 const CRON_SECRET = process.env.CRON_SECRET || 'fideliqr-cron-secret-2024'
 
-// GET - Verificar cobranzas vencidas y enviar recordatorios
+// GET - Procesar recordatorios automáticos de cobranzas
 // Este endpoint debe ser llamado por cron-job.org diariamente
 export async function GET(request: NextRequest) {
   const startTime = Date.now()
@@ -22,51 +22,143 @@ export async function GET(request: NextRequest) {
     }
 
     const resultados = {
+      cobranzasProximasAVencer: 0,
       cobranzasVencidas: 0,
       recordatoriosEnviados: 0,
-      marcadasComoVencidas: 0,
       errores: [] as string[]
     }
 
-    // 1. Contar cobranzas vencidas
+    // Obtener configuración
+    const config = await db.configuracion.findFirst()
+    const negocio = await db.negocio.findFirst()
+    
+    if (!config?.recordatoriosAutomaticos) {
+      return NextResponse.json({
+        success: true,
+        mensaje: 'Recordatorios automáticos desactivados',
+        fecha: new Date().toISOString()
+      })
+    }
+
+    const diasAntes = config.diasRecordatorio || 3
+    const diasDespues = config.diasRecordatorioVencido || 7
+    const nombreNegocio = negocio?.nombre || 'FideliQR'
+
     const hoy = new Date()
     hoy.setHours(0, 0, 0, 0)
 
-    const cobranzasVencidas = await db.cobranza.count({
+    // 1. Cobranzas próximas a vencer (enviar recordatorio X días antes)
+    const fechaLimite = new Date(hoy)
+    fechaLimite.setDate(fechaLimite.getDate() + diasAntes)
+
+    const cobranzasProximas = await db.cobranza.findMany({
+      where: {
+        estado: 'pendiente',
+        fechaVencimiento: {
+          gte: hoy,
+          lte: fechaLimite
+        }
+      },
+      include: { cliente: true }
+    })
+
+    resultados.cobranzasProximasAVencer = cobranzasProximas.length
+
+    for (const cobranza of cobranzasProximas) {
+      if (!cobranza.cliente.email) continue
+      
+      try {
+        const diasRestantes = Math.ceil(
+          (new Date(cobranza.fechaVencimiento!).getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24)
+        )
+
+        await enviarEmail({
+          to: cobranza.cliente.email,
+          subject: `⏰ Recordatorio: Pago próximo a vencer - ${nombreNegocio}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #f59e0b;">⏰ Recordatorio de Pago Próximo</h2>
+              <p>Hola ${cobranza.cliente.nombre},</p>
+              <p>Tienes un pago que vence en <strong>${diasRestantes} días</strong>.</p>
+              
+              <div style="background: #fef3c7; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <p style="margin: 0; color: #6b7280;">Concepto:</p>
+                <p style="font-size: 18px; font-weight: bold; margin: 5px 0;">${cobranza.concepto}</p>
+                <p style="margin: 15px 0 0 0; color: #6b7280;">Monto:</p>
+                <p style="font-size: 28px; font-weight: bold; color: #f59e0b; margin: 5px 0;">$${cobranza.monto.toFixed(2)}</p>
+                <p style="color: #6b7280;">Vence: ${new Date(cobranza.fechaVencimiento!).toLocaleDateString('es-ES')}</p>
+              </div>
+
+              <p>Por favor, realiza tu pago a tiempo para evitar recargos.</p>
+              
+              <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
+                <strong>${nombreNegocio}</strong><br>
+                Este es un recordatorio automático.
+              </p>
+            </div>
+          `
+        })
+        resultados.recordatoriosEnviados++
+      } catch (error) {
+        resultados.errores.push(`Error enviando a ${cobranza.cliente.email}: ${error}`)
+      }
+    }
+
+    // 2. Cobranzas vencidas (recordar cada X días)
+    const cobranzasVencidas = await db.cobranza.findMany({
       where: {
         estado: 'pendiente',
         fechaVencimiento: {
           lt: hoy
         }
-      }
-    })
-
-    resultados.cobranzasVencidas = cobranzasVencidas
-
-    // 2. Enviar recordatorios por email
-    try {
-      resultados.recordatoriosEnviados = await enviarRecordatorioCobranzasVencidas()
-    } catch (error) {
-      resultados.errores.push(`Error enviando recordatorios: ${error}`)
-    }
-
-    // 3. Marcar cobranzas muy vencidas como "vencido" (más de 30 días)
-    const hace30Dias = new Date()
-    hace30Dias.setDate(hace30Dias.getDate() - 30)
-
-    const muyVencidas = await db.cobranza.updateMany({
-      where: {
-        estado: 'pendiente',
-        fechaVencimiento: {
-          lt: hace30Dias
-        }
       },
-      data: {
-        estado: 'vencido'
-      }
+      include: { cliente: true }
     })
 
-    resultados.marcadasComoVencidas = muyVencidas.count
+    resultados.cobranzasVencidas = cobranzasVencidas.length
+
+    for (const cobranza of cobranzasVencidas) {
+      if (!cobranza.cliente.email) continue
+      
+      // Calcular días vencidos
+      const diasVencidos = Math.floor(
+        (hoy.getTime() - new Date(cobranza.fechaVencimiento!).getTime()) / (1000 * 60 * 60 * 24)
+      )
+
+      // Solo enviar si es múltiplo de diasDespues (ej: cada 7 días)
+      if (diasVencidos % diasDespues !== 0) continue
+
+      try {
+        await enviarEmail({
+          to: cobranza.cliente.email,
+          subject: `🚨 Pago Vencido - ${nombreNegocio}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #dc2626;">🚨 Pago Vencido</h2>
+              <p>Hola ${cobranza.cliente.nombre},</p>
+              <p>Tienes un pago vencido hace <strong>${diasVencidos} días</strong>.</p>
+              
+              <div style="background: #fef2f2; border: 2px solid #fca5a5; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <p style="margin: 0; color: #6b7280;">Concepto:</p>
+                <p style="font-size: 18px; font-weight: bold; margin: 5px 0;">${cobranza.concepto}</p>
+                <p style="margin: 15px 0 0 0; color: #6b7280;">Monto:</p>
+                <p style="font-size: 32px; font-weight: bold; color: #dc2626; margin: 5px 0;">$${cobranza.monto.toFixed(2)}</p>
+              </div>
+
+              <p><strong>Por favor, regulariza tu situación lo antes posible.</strong></p>
+              
+              <p style="color: #6b7280; font-size: 14px; margin-top: 30px;">
+                <strong>${nombreNegocio}</strong><br>
+                Este es un recordatorio automático.
+              </p>
+            </div>
+          `
+        })
+        resultados.recordatoriosEnviados++
+      } catch (error) {
+        resultados.errores.push(`Error enviando a ${cobranza.cliente.email}: ${error}`)
+      }
+    }
 
     const duration = Date.now() - startTime
 
@@ -74,6 +166,11 @@ export async function GET(request: NextRequest) {
       success: true,
       fecha: new Date().toISOString(),
       duracion: `${duration}ms`,
+      configuracion: {
+        diasAntes,
+        diasDespues,
+        activo: config.recordatoriosAutomaticos
+      },
       ...resultados
     })
 

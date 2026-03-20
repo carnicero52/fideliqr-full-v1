@@ -149,16 +149,20 @@ model Notificacion {
 
 // Configuración del sistema
 model Configuracion {
-  id                      String   @id @default("CONFIG001")
-  nombreSistema           String   @default("FideliQR")
+  id                       String   @id @default("CONFIG001")
+  nombreSistema            String   @default("FideliQR")
   tiempoMinimoEntreVisitas Int     @default(300)
-  maxVisitasDiarias       Int      @default(10)
-  notificarDueno          Boolean  @default(true)
-  notificarCliente        Boolean  @default(true)
-  autoActualizar          Boolean  @default(true)
-  intervaloActualizacion  Int      @default(10)
-  createdAt               DateTime @default(now())
-  updatedAt               DateTime @updatedAt
+  maxVisitasDiarias        Int      @default(10)
+  notificarDueno           Boolean  @default(true)
+  notificarCliente         Boolean  @default(true)
+  autoActualizar           Boolean  @default(true)
+  intervaloActualizacion   Int      @default(10)
+  // Recordatorios automáticos
+  recordatoriosAutomaticos Boolean  @default(true)
+  diasRecordatorio         Int      @default(3)
+  diasRecordatorioVencido  Int      @default(7)
+  createdAt                DateTime @default(now())
+  updatedAt                DateTime @updatedAt
 }
 
 // Registro de seguridad
