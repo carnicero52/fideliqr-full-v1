@@ -235,7 +235,7 @@ export default function AdminPanel() {
     if (!authChecked || !usuarioActual || !configuracion?.autoActualizar) return
     
     const intervalo = setInterval(() => {
-      cargarDatos()
+      cargarDatos(true) // silencioso, sin loading
     }, (configuracion?.intervaloActualizacion || 10) * 1000)
     
     return () => clearInterval(intervalo)
