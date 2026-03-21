@@ -138,7 +138,7 @@ type Tab = 'dashboard' | 'clientes' | 'visitas' | 'cobranzas' | 'marketing' | 'q
 export default function AdminPanel() {
   // Theme
   const { theme, setTheme, resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
+  const [temaListo, setTemaListo] = useState(false)
   
   // State
   const [tab, setTab] = useState<Tab>('dashboard')
@@ -172,7 +172,7 @@ export default function AdminPanel() {
 
   // Hydration fix for theme
   useEffect(() => {
-    setMounted(true)
+    setTemaListo(true)
   }, [])
 
   // Verificar autenticación
@@ -703,7 +703,7 @@ export default function AdminPanel() {
                 className="text-white/90 hover:text-white text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg flex items-center gap-2 transition-colors border border-white/20"
                 title={resolvedTheme === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
               >
-                {mounted && resolvedTheme === 'dark' ? '☀️ Claro' : '🌙 Oscuro'}
+                {temaListo && resolvedTheme === 'dark' ? '☀️ Claro' : '🌙 Oscuro'}
               </button>
               <span className="text-sm text-white/90 hidden sm:inline">
                 {usuarioActual?.nombre}
