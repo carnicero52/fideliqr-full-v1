@@ -195,9 +195,9 @@ export default function AdminPanel() {
   }, [])
 
   // Cargar datos
-  const cargarDatos = useCallback(async () => {
+  const cargarDatos = useCallback(async (silencioso = false) => {
     if (!usuarioActual) return
-    setLoading(true)
+    if (!silencioso) setLoading(true)
     try {
       const [estRes, cliRes, negRes, cfgRes] = await Promise.all([
         fetch('/api/estadisticas'),
