@@ -748,7 +748,7 @@ export default function AdminPanel() {
 
       {/* Main Content */}
       <main className="max-w-6xl mx-auto px-4 py-6">
-        {mensaje && (
+        {notificacion && (
           <div className={`mb-4 p-4 rounded-lg ${
             notificacion.tipo === 'exito' 
               ? 'bg-green-100 dark:bg-[#052e16] text-green-700 dark:text-[#22c55e] border border-green-300 dark:border-[#16a34a]' 
