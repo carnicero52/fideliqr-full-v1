@@ -618,10 +618,10 @@ export default function AdminPanel() {
                 <img 
                   src={negocio.logo} 
                   alt="Logo" 
-                  className="w-10 h-10 rounded-lg object-cover bg-white/20 border-2 border-white/30"
+                  className="w-16 h-16 rounded-xl object-cover bg-white/20 border-2 border-white/30"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-lg bg-white/20 border-2 border-white/30 flex items-center justify-center text-xl">
+                <div className="w-16 h-16 rounded-xl bg-white/20 border-2 border-white/30 flex items-center justify-center text-xl">
                   🏪
                 </div>
               )}
