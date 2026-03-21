@@ -227,7 +227,70 @@ export default function AdminPanel() {
     }
   }, [authChecked, usuarioActual, cargarDatos])
 
+  // Actualización automática cada 10 segundos
+  useEffect(() => {
+    if (!authChecked || !usuarioActual || !configuracion?.autoActualizar) return
+    
+    const intervalo = setInterval(() => {
+      cargarDatos()
+    }, (configuracion?.intervaloActualizacion || 10) * 1000)
+    
+    return () => clearInterval(intervalo)
+  }, [authChecked, usuarioActual, configuracion?.autoActualizar, configuracion?.intervaloActualizacion, cargarDatos])
+
+  // Sincronizar estados locales con configuración cuando se carga
+  useEffect(() => {
+    if (configuracion) {
+      setDiasAntes(configuracion.diasRecordatorio || 3)
+      setDiasDespues(configuracion.diasRecordatorioVencido || 7)
+    }
+  }, [configuracion?.diasRecordatorio, configuracion?.diasRecordatorioVencido])
+
+
+
   // Cargar usuarios
+  
+  // Guardar configuración de recordatorios
+  const guardarConfigRecordatorios = async () => {
+    if (!configuracion) return
+    setGuardandoConfig(true)
+    try {
+      const res = await fetch('/api/configuracion', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...configuracion,
+          diasRecordatorio: diasAntes,
+          diasRecordatorioVencido: diasDespues
+        })
+      })
+      if (res.ok) {
+        setMensaje({ tipo: 'exito', texto: 'Configuración guardada' })
+        cargarDatos()
+      } else {
+        setMensaje({ tipo: 'error', texto: 'Error al guardar' })
+      }
+    } catch {
+      setMensaje({ tipo: 'error', texto: 'Error al guardar' })
+    } finally {
+      setGuardandoConfig(false)
+    }
+  }
+
+  // Limpiar historial de cobranzas
+  const limpiarHistorialCobranzas = async () => {
+    if (!confirm('¿Eliminar TODAS las cobranzas pagadas y vencidas? Esta acción no se puede deshacer.')) return
+    try {
+      const res = await fetch('/api/cobranzas?accion=limpiar-historial', { method: 'DELETE' })
+      if (res.ok) {
+        setMensaje({ tipo: 'exito', texto: 'Historial limpiado' })
+        cargarDatos()
+      }
+    } catch {
+      setMensaje({ tipo: 'error', texto: 'Error al limpiar' })
+    }
+  }
+
   const cargarUsuarios = async () => {
     const res = await fetch('/api/usuarios')
     if (res.ok) {
@@ -1408,23 +1471,8 @@ export default function AdminPanel() {
                     <Label className="text-sm">Días antes del vencimiento</Label>
                     <Input 
                       type="number" 
-                      value={configuracion?.diasRecordatorio || 3}
-                      onChange={async (e) => {
-                        if (!configuracion) return
-                        try {
-                          const res = await fetch('/api/configuracion', {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              ...configuracion,
-                              diasRecordatorio: parseInt(e.target.value) || 3
-                            })
-                          })
-                          if (res.ok) cargarDatos()
-                        } catch {
-                          console.error('Error')
-                        }
-                      }}
+                      value={diasAntes}
+                      onChange={(e) => setDiasAntes(parseInt(e.target.value) || 3)}
                       className="w-24"
                       min={1}
                       max={30}
@@ -1435,29 +1483,30 @@ export default function AdminPanel() {
                     <Label className="text-sm">Días después del vencimiento</Label>
                     <Input 
                       type="number" 
-                      value={configuracion?.diasRecordatorioVencido || 7}
-                      onChange={async (e) => {
-                        if (!configuracion) return
-                        try {
-                          const res = await fetch('/api/configuracion', {
-                            method: 'PUT',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({
-                              ...configuracion,
-                              diasRecordatorioVencido: parseInt(e.target.value) || 7
-                            })
-                          })
-                          if (res.ok) cargarDatos()
-                        } catch {
-                          console.error('Error')
-                        }
-                      }}
+                      value={diasDespues}
+                      onChange={(e) => setDiasDespues(parseInt(e.target.value) || 7)}
                       className="w-24"
                       min={1}
                       max={30}
                     />
                     <p className="text-xs text-gray-500 mt-1">Recordar cada X días si está vencido</p>
                   </div>
+                </div>
+                <div className="flex gap-3 mt-4">
+                  <Button 
+                    onClick={guardarConfigRecordatorios} 
+                    disabled={guardandoConfig}
+                    className="bg-amber-600 hover:bg-amber-700 text-white"
+                  >
+                    {guardandoConfig ? 'Guardando...' : '💾 Guardar Configuración'}
+                  </Button>
+                  <Button 
+                    onClick={limpiarHistorialCobranzas}
+                    variant="outline"
+                    className="border-red-300 text-red-600 hover:bg-red-50"
+                  >
+                    🗑️ Limpiar Historial
+                  </Button>
                 </div>
                 <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-sm text-amber-700 dark:text-amber-300">
                   💡 <strong>Configuración del Cron Job:</strong> Para activar los recordatorios automáticos, configura un cron job en <code className="bg-amber-200 dark:bg-amber-800 px-1 rounded">cron-job.org</code> que llame a:
