@@ -607,7 +607,7 @@ export default function AdminPanel() {
   }
 
   return (
-        <div className="min-h-screen bg-gray-50 dark:bg-[#0a0f1a]">
+        <div className="min-h-screen bg-gray-50 dark:bg-black">
       {/* Header con Logo y Nombre del Negocio */}
       <header className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-3">
@@ -651,7 +651,7 @@ export default function AdminPanel() {
       </header>
 
       {/* Navigation */}
-      <nav className="bg-white dark:bg-[#111827] border-b shadow-sm sticky top-16 z-40">
+      <nav className="bg-white dark:bg-[#1e1e1e] border-b shadow-sm sticky top-16 z-40">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex overflow-x-auto gap-1 py-2">
             {[
@@ -670,7 +670,7 @@ export default function AdminPanel() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
                   tab === t.id 
                     ? 'bg-emerald-600 text-white' 
-                    : 'bg-gray-100 dark:bg-[#1f2937] text-gray-600 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-slate-600'
+                    : 'bg-gray-100 dark:bg-[#2a2a2a] text-gray-600 dark:text-white hover:bg-gray-200 dark:hover:bg-[#3f3f46]'
                 }`}
               >
                 {t.label}
@@ -685,8 +685,8 @@ export default function AdminPanel() {
         {mensaje && (
           <div className={`mb-4 p-4 rounded-lg ${
             mensaje.tipo === 'exito' 
-              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-300 dark:border-green-700' 
-              : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-700'
+              ? 'bg-green-100 dark:bg-[#052e16] text-green-700 dark:text-[#22c55e] border border-green-300 dark:border-[#16a34a]' 
+              : 'bg-red-100 dark:bg-[#450a0a] text-red-700 dark:text-[#ef4444] border border-red-300 dark:border-[#b91c1c]'
           }`}>
             {mensaje.texto}
           </div>
@@ -698,7 +698,7 @@ export default function AdminPanel() {
             {/* ENCABEZADO */}
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-800 dark:text-white">📊 Panel de Control</h2>
-              <span className="text-sm text-gray-500 dark:text-gray-300">{new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+              <span className="text-sm text-gray-500 dark:text-white">{new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
             </div>
             
             {/* FILA 1: CLIENTES */}
@@ -738,21 +738,21 @@ export default function AdminPanel() {
               <CardHeader><CardTitle className="text-lg">🎁 Puntos y Premios</CardTitle></CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg text-center">
-                    <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{estadisticas.puntosTotales}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">Cupones en circulación</div>
+                  <div className="p-4 bg-emerald-50 dark:bg-[#064e3b] rounded-lg text-center">
+                    <div className="text-2xl font-bold text-emerald-600 dark:text-[#10b981]">{estadisticas.puntosTotales}</div>
+                    <div className="text-sm text-gray-500 dark:text-white">Cupones en circulación</div>
                   </div>
-                  <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg text-center">
-                    <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{estadisticas.premiosCanjeados}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">Premios canjeados</div>
+                  <div className="p-4 bg-purple-50 dark:bg-[#3b0764] rounded-lg text-center">
+                    <div className="text-2xl font-bold text-purple-600 dark:text-[#8b5cf6]">{estadisticas.premiosCanjeados}</div>
+                    <div className="text-sm text-gray-500 dark:text-white">Premios canjeados</div>
                   </div>
                   <div className="p-4 bg-pink-50 dark:bg-pink-900/30 rounded-lg text-center">
                     <div className="text-2xl font-bold text-pink-600 dark:text-pink-400">{estadisticas.premiosMes}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">Canjeados este mes</div>
+                    <div className="text-sm text-gray-500 dark:text-white">Canjeados este mes</div>
                   </div>
-                  <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg text-center">
-                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{negocio?.puntosParaPremio || 10}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">Cupones por premio</div>
+                  <div className="p-4 bg-blue-50 dark:bg-[#0c1929] rounded-lg text-center">
+                    <div className="text-2xl font-bold text-blue-600 dark:text-[#3b82f6]">{negocio?.puntosParaPremio || 10}</div>
+                    <div className="text-sm text-gray-500 dark:text-white">Cupones por premio</div>
                   </div>
                 </div>
               </CardContent>
@@ -763,23 +763,23 @@ export default function AdminPanel() {
               <CardHeader><CardTitle className="text-lg">💰 Resumen de Cobranzas</CardTitle></CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  <div className="p-4 bg-red-50 dark:bg-red-900/30 rounded-lg">
-                    <div className="text-xs text-gray-500 dark:text-gray-300 mb-1">Pendientes</div>
-                    <div className="text-2xl font-bold text-red-600 dark:text-red-400">${estadisticas.montoPendiente.toFixed(2)}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">{estadisticas.cobranzasPendientes} cobranzas</div>
+                  <div className="p-4 bg-red-50 dark:bg-[#450a0a] rounded-lg">
+                    <div className="text-xs text-gray-500 dark:text-white mb-1">Pendientes</div>
+                    <div className="text-2xl font-bold text-red-600 dark:text-[#ef4444]">${estadisticas.montoPendiente.toFixed(2)}</div>
+                    <div className="text-sm text-gray-500 dark:text-white">{estadisticas.cobranzasPendientes} cobranzas</div>
                     {estadisticas.cobranzasVencidas > 0 && (
-                      <div className="text-xs text-red-500 dark:text-red-400 mt-1">⚠️ {estadisticas.cobranzasVencidas} vencidas (${estadisticas.montoVencido.toFixed(2)})</div>
+                      <div className="text-xs text-red-500 dark:text-[#ef4444] mt-1">⚠️ {estadisticas.cobranzasVencidas} vencidas (${estadisticas.montoVencido.toFixed(2)})</div>
                     )}
                   </div>
-                  <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg">
-                    <div className="text-xs text-gray-500 dark:text-gray-300 mb-1">Pagadas</div>
-                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">${estadisticas.montoPagado.toFixed(2)}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">{estadisticas.cobranzasPagadas} cobranzas</div>
+                  <div className="p-4 bg-green-50 dark:bg-[#052e16] rounded-lg">
+                    <div className="text-xs text-gray-500 dark:text-white mb-1">Pagadas</div>
+                    <div className="text-2xl font-bold text-green-600 dark:text-[#22c55e]">${estadisticas.montoPagado.toFixed(2)}</div>
+                    <div className="text-sm text-gray-500 dark:text-white">{estadisticas.cobranzasPagadas} cobranzas</div>
                   </div>
-                  <div className="p-4 bg-gray-50 dark:bg-[#1f2937] rounded-lg">
-                    <div className="text-xs text-gray-500 dark:text-gray-300 mb-1">Total Gestión</div>
-                    <div className="text-2xl font-bold text-gray-700 dark:text-gray-200">${(estadisticas.montoPendiente + estadisticas.montoPagado).toFixed(2)}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">{estadisticas.cobranzasPendientes + estadisticas.cobranzasPagadas} registros</div>
+                  <div className="p-4 bg-gray-50 dark:bg-[#2a2a2a] rounded-lg">
+                    <div className="text-xs text-gray-500 dark:text-white mb-1">Total Gestión</div>
+                    <div className="text-2xl font-bold text-gray-700 dark:text-white">${(estadisticas.montoPendiente + estadisticas.montoPagado).toFixed(2)}</div>
+                    <div className="text-sm text-gray-500 dark:text-white">{estadisticas.cobranzasPendientes + estadisticas.cobranzasPagadas} registros</div>
                   </div>
                 </div>
               </CardContent>
@@ -792,15 +792,15 @@ export default function AdminPanel() {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div className="p-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg text-center">
                     <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{estadisticas.campanasEnviadas}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">Campañas enviadas</div>
+                    <div className="text-sm text-gray-500 dark:text-white">Campañas enviadas</div>
                   </div>
                   <div className="p-4 bg-teal-50 dark:bg-teal-900/30 rounded-lg text-center">
                     <div className="text-2xl font-bold text-teal-600 dark:text-teal-400">{estadisticas.emailsEnviados}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">Emails de marketing</div>
+                    <div className="text-sm text-gray-500 dark:text-white">Emails de marketing</div>
                   </div>
                   <div className="p-4 bg-cyan-50 dark:bg-cyan-900/30 rounded-lg text-center">
-                    <div className="text-2xl font-bold text-cyan-600 dark:text-cyan-400">{estadisticas.notificacionesEnviadas}</div>
-                    <div className="text-sm text-gray-500 dark:text-gray-300">Notificaciones totales</div>
+                    <div className="text-2xl font-bold text-cyan-600 dark:text-[#06b6d4]">{estadisticas.notificacionesEnviadas}</div>
+                    <div className="text-sm text-gray-500 dark:text-white">Notificaciones totales</div>
                   </div>
                 </div>
               </CardContent>
@@ -1032,14 +1032,14 @@ export default function AdminPanel() {
                 {editandoNegocio ? (
                   <div className="space-y-4">
                     {/* Logo */}
-                    <div className="flex flex-col items-center gap-4 p-4 bg-gray-50 dark:bg-[#1f2937] rounded-lg">
+                    <div className="flex flex-col items-center gap-4 p-4 bg-gray-50 dark:bg-[#2a2a2a] rounded-lg">
                       <Label className="text-base font-semibold">Logo del Negocio</Label>
                       {editandoNegocio.logo ? (
                         <div className="relative">
                           <img 
                             src={editandoNegocio.logo} 
                             alt="Logo" 
-                            className="w-32 h-32 object-contain rounded-lg border-2 border-gray-200 dark:border-slate-600 bg-white"
+                            className="w-32 h-32 object-contain rounded-lg border-2 border-gray-200 dark:border-[#4b5563] bg-white"
                           />
                           <button
                             onClick={() => setEditandoNegocio({...editandoNegocio, logo: null})}
@@ -1049,7 +1049,7 @@ export default function AdminPanel() {
                           </button>
                         </div>
                       ) : (
-                        <div className="w-32 h-32 border-2 border-dashed border-gray-300 dark:border-slate-500 rounded-lg flex items-center justify-center bg-white dark:bg-[#111827]">
+                        <div className="w-32 h-32 border-2 border-dashed border-gray-300 dark:border-slate-500 rounded-lg flex items-center justify-center bg-white dark:bg-[#1e1e1e]">
                           <span className="text-gray-400 text-sm text-center">Sin logo</span>
                         </div>
                       )}
@@ -1072,7 +1072,7 @@ export default function AdminPanel() {
                         }}
                         className="text-sm"
                       />
-                      <p className="text-xs text-gray-500 dark:text-gray-300">PNG, JPG o SVG. Máximo 5MB</p>
+                      <p className="text-xs text-gray-500 dark:text-white">PNG, JPG o SVG. Máximo 5MB</p>
                     </div>
                     
                     <div className="grid md:grid-cols-2 gap-4">
@@ -1115,10 +1115,10 @@ export default function AdminPanel() {
                           <img 
                             src={negocio.logo} 
                             alt="Logo" 
-                            className="w-24 h-24 object-contain rounded-lg border-2 border-gray-200 dark:border-slate-600 bg-white"
+                            className="w-24 h-24 object-contain rounded-lg border-2 border-gray-200 dark:border-[#4b5563] bg-white"
                           />
                         ) : (
-                          <div className="w-24 h-24 border-2 border-dashed border-gray-300 dark:border-slate-500 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-[#1f2937]">
+                          <div className="w-24 h-24 border-2 border-dashed border-gray-300 dark:border-slate-500 rounded-lg flex items-center justify-center bg-gray-50 dark:bg-[#2a2a2a]">
                             <span className="text-gray-400 text-xs text-center">Sin logo</span>
                           </div>
                         )}
@@ -1126,29 +1126,29 @@ export default function AdminPanel() {
                       </div>
                       
                       <div className="flex-1 grid md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg">
-                          <p className="text-xs text-gray-500 dark:text-gray-300">Nombre</p>
-                          <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">{negocio.nombre}</p>
+                        <div className="p-4 bg-emerald-50 dark:bg-[#064e3b] rounded-lg">
+                          <p className="text-xs text-gray-500 dark:text-white">Nombre</p>
+                          <p className="text-lg font-bold text-emerald-700 dark:text-[#10b981]">{negocio.nombre}</p>
                         </div>
-                        <div className="p-4 bg-gray-50 dark:bg-[#1f2937] rounded-lg">
-                          <p className="text-xs text-gray-500 dark:text-gray-300">Descripción</p>
-                          <p className="text-lg text-gray-700 dark:text-gray-200">{negocio.descripcion || 'Sin descripción'}</p>
+                        <div className="p-4 bg-gray-50 dark:bg-[#2a2a2a] rounded-lg">
+                          <p className="text-xs text-gray-500 dark:text-white">Descripción</p>
+                          <p className="text-lg text-gray-700 dark:text-white">{negocio.descripcion || 'Sin descripción'}</p>
                         </div>
-                        <div className="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
-                          <p className="text-xs text-gray-500 dark:text-gray-300">Teléfono</p>
-                          <p className="text-lg text-blue-700 dark:text-blue-400">{negocio.telefono || 'No configurado'}</p>
+                        <div className="p-4 bg-blue-50 dark:bg-[#0c1929] rounded-lg">
+                          <p className="text-xs text-gray-500 dark:text-white">Teléfono</p>
+                          <p className="text-lg text-blue-700 dark:text-[#3b82f6]">{negocio.telefono || 'No configurado'}</p>
                         </div>
-                        <div className="p-4 bg-purple-50 dark:bg-purple-900/30 rounded-lg">
-                          <p className="text-xs text-gray-500 dark:text-gray-300">Email</p>
-                          <p className="text-lg text-purple-700 dark:text-purple-400">{negocio.email || 'No configurado'}</p>
+                        <div className="p-4 bg-purple-50 dark:bg-[#3b0764] rounded-lg">
+                          <p className="text-xs text-gray-500 dark:text-white">Email</p>
+                          <p className="text-lg text-purple-700 dark:text-[#8b5cf6]">{negocio.email || 'No configurado'}</p>
                         </div>
-                        <div className="p-4 bg-gray-50 dark:bg-[#1f2937] rounded-lg">
-                          <p className="text-xs text-gray-500 dark:text-gray-300">Dirección</p>
-                          <p className="text-lg text-gray-700 dark:text-gray-200">{negocio.direccion || 'No configurada'}</p>
+                        <div className="p-4 bg-gray-50 dark:bg-[#2a2a2a] rounded-lg">
+                          <p className="text-xs text-gray-500 dark:text-white">Dirección</p>
+                          <p className="text-lg text-gray-700 dark:text-white">{negocio.direccion || 'No configurada'}</p>
                         </div>
-                        <div className="p-4 bg-green-50 dark:bg-green-900/30 rounded-lg">
-                          <p className="text-xs text-gray-500 dark:text-gray-300">WhatsApp</p>
-                          <p className="text-lg text-green-700 dark:text-green-400">{negocio.whatsapp || 'No configurado'}</p>
+                        <div className="p-4 bg-green-50 dark:bg-[#052e16] rounded-lg">
+                          <p className="text-xs text-gray-500 dark:text-white">WhatsApp</p>
+                          <p className="text-lg text-green-700 dark:text-[#22c55e]">{negocio.whatsapp || 'No configurado'}</p>
                         </div>
                       </div>
                     </div>
@@ -1461,7 +1461,7 @@ export default function AdminPanel() {
                 </div>
                 <div className="mt-4 p-3 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-sm text-amber-700 dark:text-amber-300">
                   💡 <strong>Configuración del Cron Job:</strong> Para activar los recordatorios automáticos, configura un cron job en <code className="bg-amber-200 dark:bg-amber-800 px-1 rounded">cron-job.org</code> que llame a:
-                  <code className="block mt-2 bg-white dark:bg-[#111827] p-2 rounded text-xs">
+                  <code className="block mt-2 bg-white dark:bg-[#1e1e1e] p-2 rounded text-xs">
                     GET /api/cron/cobranzas?secret=TU_SECRET
                   </code>
                 </div>
@@ -1559,7 +1559,7 @@ export default function AdminPanel() {
                   <div>
                     <Label>Tipo de Campaña</Label>
                     <select 
-                      className="w-full h-10 px-3 rounded-lg border-2 border-gray-200 dark:border-slate-600 dark:bg-[#111827]" 
+                      className="w-full h-10 px-3 rounded-lg border-2 border-gray-200 dark:border-[#4b5563] dark:bg-[#1e1e1e]" 
                       value={nuevoMarketing.tipo} 
                       onChange={(e) => setNuevoMarketing({...nuevoMarketing, tipo: e.target.value})}
                     >
@@ -1573,7 +1573,7 @@ export default function AdminPanel() {
                   <div>
                     <Label>Destinatarios</Label>
                     <select 
-                      className="w-full h-10 px-3 rounded-lg border-2 border-gray-200 dark:border-slate-600 dark:bg-[#111827]" 
+                      className="w-full h-10 px-3 rounded-lg border-2 border-gray-200 dark:border-[#4b5563] dark:bg-[#1e1e1e]" 
                       value={nuevoMarketing.destinatarios} 
                       onChange={(e) => setNuevoMarketing({...nuevoMarketing, destinatarios: e.target.value})}
                     >
@@ -1592,7 +1592,7 @@ export default function AdminPanel() {
                   <div className="md:col-span-2">
                     <Label>Mensaje</Label>
                     <textarea 
-                      className="w-full h-32 px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-slate-600 dark:bg-[#111827] resize-none" 
+                      className="w-full h-32 px-3 py-2 rounded-lg border-2 border-gray-200 dark:border-[#4b5563] dark:bg-[#1e1e1e] resize-none" 
                       value={nuevoMarketing.mensaje} 
                       onChange={(e) => setNuevoMarketing({...nuevoMarketing, mensaje: e.target.value})} 
                       placeholder="Escribe tu mensaje aquí. Puedes usar saltos de línea." 
@@ -1601,7 +1601,7 @@ export default function AdminPanel() {
                   
                   {/* Scheduling Section */}
                   <div className="md:col-span-2 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-2 border-blue-200 dark:border-blue-800">
-                    <h4 className="font-semibold text-blue-700 dark:text-blue-400 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-blue-700 dark:text-[#3b82f6] mb-3 flex items-center gap-2">
                       📅 Programación de Envío
                     </h4>
                     <div className="grid md:grid-cols-2 gap-4">
@@ -1618,7 +1618,7 @@ export default function AdminPanel() {
                       <div>
                         <Label className="text-sm">Repetir Automáticamente</Label>
                         <select 
-                          className="w-full h-10 px-3 rounded-lg border-2 border-gray-200 dark:border-slate-600 dark:bg-[#111827]" 
+                          className="w-full h-10 px-3 rounded-lg border-2 border-gray-200 dark:border-[#4b5563] dark:bg-[#1e1e1e]" 
                           value={nuevoMarketing.repetir || ''} 
                           onChange={(e) => setNuevoMarketing({...nuevoMarketing, repetir: e.target.value})}
                         >
@@ -1691,7 +1691,7 @@ export default function AdminPanel() {
                               }) : 'Sin fecha'}
                             </div>
                             {m.repetir && (
-                              <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                              <div className="text-xs text-purple-600 dark:text-[#8b5cf6] mt-1">
                                 🔁 Se repite: {m.repetir}
                               </div>
                             )}
@@ -1749,7 +1749,7 @@ export default function AdminPanel() {
                             </Button>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 line-clamp-2">{m.mensaje}</p>
+                        <p className="text-sm text-gray-600 dark:text-white mt-2 line-clamp-2">{m.mensaje}</p>
                       </div>
                     ))}
                   </div>
@@ -1786,7 +1786,7 @@ export default function AdminPanel() {
                               <span className="font-semibold">{m.titulo}</span>
                               <span className={`text-xs px-2 py-1 rounded-full ${
                                 m.estado === 'enviado' ? 'bg-green-100 text-green-700 dark:bg-green-800 dark:text-green-300' :
-                                m.estado === 'cancelado' ? 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300' :
+                                m.estado === 'cancelado' ? 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-white' :
                                 m.estado === 'programado' ? 'bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-300' :
                                 'bg-amber-100 text-amber-700 dark:bg-amber-800 dark:text-amber-300'
                               }`}>
@@ -1796,19 +1796,19 @@ export default function AdminPanel() {
                                  '⏳ Pendiente'}
                               </span>
                               {m.repetir && m.estado === 'enviado' && (
-                                <span className="text-xs text-purple-600 dark:text-purple-400">
+                                <span className="text-xs text-purple-600 dark:text-[#8b5cf6]">
                                   🔁 {m.repetir}
                                 </span>
                               )}
                             </div>
-                            <p className="text-sm text-gray-500 dark:text-gray-300 mt-1 line-clamp-2">{m.mensaje}</p>
+                            <p className="text-sm text-gray-500 dark:text-white mt-1 line-clamp-2">{m.mensaje}</p>
                             <div className="flex gap-4 text-xs text-gray-400 mt-2">
                               <span>👥 {m.destinatarios === 'todos' ? 'Todos' : 'Inactivos'}</span>
                               {m.estado === 'enviado' && (
                                 <>
-                                  <span className="text-green-600 dark:text-green-400">✉️ {m.enviados} enviados</span>
+                                  <span className="text-green-600 dark:text-[#22c55e]">✉️ {m.enviados} enviados</span>
                                   {m.errores > 0 && (
-                                    <span className="text-red-600 dark:text-red-400">⚠️ {m.errores} errores</span>
+                                    <span className="text-red-600 dark:text-[#ef4444]">⚠️ {m.errores} errores</span>
                                   )}
                                 </>
                               )}
@@ -1853,7 +1853,7 @@ export default function AdminPanel() {
                 <h4 className="font-semibold text-indigo-700 dark:text-indigo-400 mb-2 flex items-center gap-2">
                   ⚙️ Configuración de Envío Automático
                 </h4>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                <p className="text-sm text-gray-600 dark:text-white mb-3">
                   Para que las campañas programadas se envíen automáticamente, configura un cron job:
                 </p>
                 <div className="bg-gray-900 text-green-400 p-3 rounded-lg font-mono text-xs overflow-x-auto">
@@ -1869,8 +1869,8 @@ export default function AdminPanel() {
         )}
       </main>
 
-      <footer className="bg-white dark:bg-[#111827] border-t py-4 mt-8">
-        <div className="max-w-6xl mx-auto px-4 text-center text-gray-500 dark:text-gray-300 text-sm">
+      <footer className="bg-white dark:bg-[#1e1e1e] border-t py-4 mt-8">
+        <div className="max-w-6xl mx-auto px-4 text-center text-gray-500 dark:text-white text-sm">
           FideliQR V1 - Sistema de Fidelización | Panel de Administración
         </div>
       </footer>
